@@ -34,7 +34,8 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'corsheaders',
-    'rest_framework.authtoken',  # ✅ ADD FOR API AUTH
+    'rest_framework.authtoken',
+    'storages',  # ✅ ADD FOR CLOUD STORAGE
 
     # Local apps
     'movies',
@@ -117,24 +118,20 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Media files
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # ✅ SECURE: REST Framework with authentication
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-                 'rest_framework.permissions.IsAdminUser'
+        'rest_framework.permissions.IsAdminUser'  # 🔒 ONLY ADMIN ACCESS
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-'rest_framework.authentication.SessionAuthentication',  # 🔒 Django admin login
-        'rest_framework.authentication.BasicAuthentication',    # 🔒 Username/Password
+        'rest_framework.authentication.SessionAuthentication',  # 🔒 Django admin login
+        'rest_framework.authentication.BasicAuthentication',  # 🔒 Username/Password
     ],
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/day',    # 🔒 Rate limiting
+        'anon': '100/day',  # 🔒 Rate limiting
         'user': '1000/day'
     }
 }
@@ -153,3 +150,15 @@ if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
     SECURE_SSL_REDIRECT = True
+
+# Backblaze B2 Configuration - Cloud Storage for Videos
+AWS_ACCESS_KEY_ID = '0042a84b9e95bb10000000001'  # Your keyID
+AWS_SECRET_ACCESS_KEY = 'K004rMJh5pduND8s+drjPWeSiDsWHUs'  # Your applicationKey
+AWS_STORAGE_BUCKET_NAME = 'netflix-videos'  # Bucket name
+AWS_S3_ENDPOINT_URL = 'https://s3.us-west-002.backblazeb2.com'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.us-west-002.backblazeb2.com'
+AWS_DEFAULT_ACL = 'public-read'  # For video streaming
+AWS_QUERYSTRING_AUTH = False
+
+# Use B2 for media files
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
