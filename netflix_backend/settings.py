@@ -127,11 +127,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # ✅ SECURE: REST Framework with authentication
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',  # 🔒 SECURE
+                 'rest_framework.permissions.IsAdminUser'
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',  # 🔒 API TOKENS
-        'rest_framework.authentication.SessionAuthentication',
+'rest_framework.authentication.SessionAuthentication',  # 🔒 Django admin login
+        'rest_framework.authentication.BasicAuthentication',    # 🔒 Username/Password
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',    # 🔒 Rate limiting
